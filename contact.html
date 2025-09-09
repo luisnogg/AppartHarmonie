@@ -197,13 +197,25 @@
 
   </main>
 
-  <footer id="footer" class="footer">
+  <footer id="footer" class="footer bg-light text-dark py-3">
     <div class="container">
-      <div class="copyright d-flex flex-column flex-md-row align-items-center justify-content-md-between">
-        <p>© <span>Copyright</span> <strong class="px-1 sitename">Apart Harmonie Nauders</strong> <span>All Rights Reserved</span></p>
-        <div class="credits">
-          Designed by <a href="#">Luis</a>
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-center text-center text-md-start">
+
+        <!-- Copyright + Links -->
+        <p class="mb-2 mb-md-0">
+          © <span id="year"></span> <strong class="sitename">Apart Harmonie Nauders</strong> – Alle Rechte vorbehalten 
+          | <a href="/impressum.html" class="text-decoration-none">Impressum</a> 
+          | <a href="/datenschutz.html" class="text-decoration-none">Datenschutz</a>
+        </p>
+
+        <!-- Social + Credits -->
+        <div>
+          <!-- <a href="https://www.instagram.com/dein_instagram" target="_blank" class="text-dark me-2" aria-label="Instagram">
+            <i class="bi bi-instagram" style="font-size: 1.2rem;"></i>
+          </a> -->
+          <small>Erstellt von <a href="#" class="text-decoration-none">Luis</a></small>
         </div>
+
       </div>
     </div>
   </footer>
@@ -213,6 +225,12 @@
 
   <!-- Preloader -->
   <div id="preloader"></div>
+
+  <script>
+  // Automatisch das aktuelle Jahr einfügen
+  document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+
 
   <!-- Vendor JS Files -->
   <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>

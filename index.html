@@ -27,6 +27,11 @@
   <!-- Main CSS File -->
   <link href="assets/css/main.css" rel="stylesheet">
 
+  <!-- FullCalendar (nur für Anzeige, keine Formulare) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+
+
   <!-- =======================================================
   * Template Name: Active
   * Template URL: https://bootstrapmade.com/active-bootstrap-website-template/
@@ -420,8 +425,40 @@
       
     </section><!-- /Tabs Section -->
 
+    <!-- <section id="verfuegbarkeit" class="section">
+      <div class="container">
+        <div class="section-title text-center" data-aos="fade-up">
+          <h1>Verfügbarkeit</h1>
+          <p>Belegte Tage sind farblich markiert. Nicht markierte Tage gelten als frei.</p>
+        </div>
+
+        <div class="row justify-content-center mb-3" data-aos="fade-up">
+          <div class="col-md-6 d-flex gap-2 align-items-center justify-content-center">
+            <label for="apartmentSelect" class="mb-0 fw-semibold">Wohnung:</label>
+            <select id="apartmentSelect" class="form-select" style="max-width: 320px;">
+              <option value="alpengluehn">Alpenglühn – bis 3 Personen</option>
+              <option value="bergzauber">Bergzauber – bis 4 Personen</option>
+              <option value="gipfelsieg">Gipfelsieg – bis 3 Personen</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row justify-content-center" data-aos="fade-up" data-aos-delay="50">
+          <div class="col-lg-10">
+            <div class="border rounded p-2 bg-white">
+              <div id="availability-calendar" style="min-height: 650px;"></div>
+            </div>
+            <div class="d-flex gap-3 align-items-center justify-content-center mt-3 small">
+              <span class="badge rounded-pill" style="background:#dc3545;">Belegt</span>
+              <span class="text-muted">Nicht markiert = frei</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section> -->
+
     <!-- Pricing Section -->
-    <section id="Preise" class="pricing section">
+    <section id="Preise" class="pricing section light-background">
 
       <!-- Section Title -->
       <div class="container section-title" data-aos="fade-up">
@@ -486,7 +523,7 @@
     </section><!-- /Pricing Section -->
 
     <!-- FAQ -->
-    <section id="faq" class="faq section light-background">
+    <section id="faq" class="faq section">
       <div class="container section-title" data-aos="fade-up">
         <p>Gut zu wissen</p>
         <h2>Häufige Fragen</h2>
@@ -593,13 +630,25 @@
     </section><!-- /About 2 Section -->
   </main>
 
-  <footer id="footer" class="footer">
+  <footer id="footer" class="footer bg-light text-dark py-3">
     <div class="container">
-      <div class="copyright d-flex flex-column flex-md-row align-items-center justify-content-md-between">
-        <p>© <span>Copyright</span> <strong class="px-1 sitename">Apart Harmonie Nauders</strong> <span>All Rights Reserved</span></p>
-        <div class="credits">
-          Designed by <a href="#">Luis</a>
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-center text-center text-md-start">
+
+        <!-- Copyright + Links -->
+        <p class="mb-2 mb-md-0">
+          © <span id="year"></span> <strong class="sitename">Apart Harmonie Nauders</strong> – Alle Rechte vorbehalten 
+          | <a href="/impressum.html" class="text-decoration-none">Impressum</a> 
+          | <a href="datenschutz.html" class="text-decoration-none">Datenschutz</a>
+        </p>
+
+        <!-- Social + Credits -->
+        <div>
+          <!-- <a href="https://www.instagram.com/dein_instagram" target="_blank" class="text-dark me-2" aria-label="Instagram">
+            <i class="bi bi-instagram" style="font-size: 1.2rem;"></i>
+          </a> -->
+          <small>Erstellt von <a href="#" class="text-decoration-none">Luis</a></small>
         </div>
+
       </div>
     </div>
   </footer>
@@ -622,6 +671,89 @@
 
   <!-- Main JS File -->
   <script src="assets/js/main.js"></script>
+
+  <script>
+    // Automatisch das aktuelle Jahr einfügen
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+
+  <script>
+  // ==== 1) Deine Belegungen pflegen (Beispiele) =========================
+  // Format: { start: 'YYYY-MM-DD', end: 'YYYY-MM-DD', display: 'background' }
+  // end ist EXKLUSIV -> immer 1 Tag NACH dem letzten belegten Tag eintragen!
+
+  const OCCUPANCY = {
+    alpengluehn: [
+      { start: '2025-09-10', end: '2025-09-16', display: 'background' },
+      { start: '2025-10-02', end: '2025-10-06', display: 'background' },
+      // weitere Zeiträume ...
+    ],
+    bergzauber: [
+      { start: '2025-09-20', end: '2025-09-28', display: 'background' },
+      { start: '2025-10-12', end: '2025-10-19', display: 'background' },
+    ],
+    gipfelsieg: [
+      { start: '2025-09-05', end: '2025-09-08', display: 'background' },
+      { start: '2025-09-18', end: '2025-09-23', display: 'background' },
+    ]
+  };
+
+  // Optional: einheitliches Styling für "belegt"-Hintergründe
+  const OCCUPIED_STYLE = {
+    color: '#dc3545',           // Textfarbe (wird hier nicht genutzt)
+    backgroundColor: '#f8d7da', // helles Rot, gut sichtbar
+    borderColor: '#f8d7da'
+  };
+
+  // ==== 2) Kalender initialisieren ======================================
+  document.addEventListener('DOMContentLoaded', function () {
+    const calendarEl = document.getElementById('availability-calendar');
+
+    const calendar = new FullCalendar.Calendar(calendarEl, {
+      initialView: 'dayGridMonth',
+      height: 'auto',
+      expandRows: true,
+      firstDay: 1,                 // Woche startet am Montag
+      locale: 'de',
+      timeZone: 'Europe/Vienna',
+      fixedWeekCount: false,       // kein erzwungener 6-Zeilen-Monat
+      headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: ''                  // keine weiteren Ansichten nötig
+      },
+      // Nur Hintergrund-Events ("Belegt"-Blöcke), keine Klicks nötig
+      eventSources: [
+        {
+          events: OCCUPANCY.alpengluehn.map(e => ({ ...e, ...OCCUPIED_STYLE, title: 'Belegt' })),
+          // Um sicherzugehen, dass es wie ein Hintergrund wirkt:
+          display: 'background'
+        }
+      ],
+      // Tooltips/Aria
+      eventDidMount: function(info) {
+        if (info.event.display === 'background') {
+          info.el.setAttribute('aria-label', 'Belegt');
+          info.el.setAttribute('title', 'Belegt');
+        }
+      }
+    });
+
+    calendar.render();
+
+    // ==== 3) Wechsel zwischen Wohnungen =================================
+    const select = document.getElementById('apartmentSelect');
+    select.addEventListener('change', () => {
+      const key = select.value; // 'alpengluehn' | 'bergzauber' | 'gipfelsieg'
+      calendar.removeAllEventSources();
+      calendar.addEventSource({
+        events: OCCUPANCY[key].map(e => ({ ...e, ...OCCUPIED_STYLE, title: 'Belegt' })),
+        display: 'background'
+      });
+    });
+  });
+</script>
+
 
 </body>
 
